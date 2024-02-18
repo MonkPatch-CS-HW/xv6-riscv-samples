@@ -8,7 +8,19 @@ int
 main(int argc, char *argv[])
 {
   char buf[BUF_SIZE];
-  gets(buf, BUF_SIZE);
+  int i, cc;
+  char c;
+
+  for(i=0; i+1 < BUF_SIZE; ){
+    cc = read(0, &c, 1);
+    if(cc < 1)
+      break;
+    buf[i++] = c;
+    if(c == '\n' || c == '\r')
+      break;
+  }
+  buf[i] = '\0';
+
 
   char *space = 0;
   int len = strlen(buf);
