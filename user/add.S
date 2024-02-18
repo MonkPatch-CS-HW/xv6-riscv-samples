@@ -5,6 +5,7 @@
 num_fmt: .asciz "number: %d\n"
 str_fmt: .asciz "number: %s\n"
 msg_fmt: .asciz "number 1: %d, number 2: %d\n"
+err_fmt: .asciz "error: not two numbers\n"
 res_fmt: .asciz "%d\n"
 
 buf: .zero 20
@@ -75,12 +76,11 @@ main:
     ecall
 
 failure:
-
-    #li a7, 16                 # Write syscall number
-    #li a0, 2                  # stderr fd (2)
-    #la a1, msg_err            # Error message string address 
-    #li a2, 23                 # Error message string length
-    #ecall                     # Syscall
+    li a7, 16                 # Write syscall number
+    li a0, 2                  # stderr fd (2)
+    la a1, err_fmt            # Error message string address 
+    li a2, 24                 # Error message string length
+    ecall                     # Syscall
 
     li a7, 2                  # Exit system call
     li a0, 1                  # Exit status (failure)
