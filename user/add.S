@@ -5,6 +5,8 @@
 num_fmt: .asciz "number: %d\n"
 str_fmt: .asciz "number: %s\n"
 msg_fmt: .asciz "number 1: %d, number 2: %d\n"
+res_fmt: .asciz "%d\n"
+
 buf: .zero 20
 
 
@@ -29,11 +31,6 @@ main:
     addi a0, a0, 1
     mv s2, a0
 
-    # # debug printf
-    # la a0, str_fmt
-    # ld a1, snd_ptr
-    # call printf
-
     # convert first part of string to number
     la a0, buf
     li a1, 20
@@ -46,9 +43,11 @@ main:
     call atoi
     mv s4, a0
 
-    la a0, msg_fmt
-    mv a1, s3
-    mv a2, s4
+    add s5, s3, s4
+
+    # print result
+    la a0, res_fmt
+    mv a1, s5
     call printf
 
    # mv a1, a0
