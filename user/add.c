@@ -31,7 +31,7 @@ main(int argc, char *argv[])
   int a = atoi(buf_a);
   int b = atoi(buf_b);
 
-  printf("result: %d\n", a + b);
+  printf("result: %d\n", add(a, b));
 
   exit(0);
 
