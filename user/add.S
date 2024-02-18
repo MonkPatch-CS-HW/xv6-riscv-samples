@@ -26,11 +26,6 @@ main:
     li a1, 20
     call readstdin
 
-    # mv a2, a0
-    # la a0, fmt_str
-    # la a1, buf
-    # call printf
-
     # s0 - start buf
     # s1 - space location
     # s2 - last char
@@ -94,12 +89,6 @@ cont:
     li a1, 20
     call atoi
     mv s4, a0
-
-    # print intermediate result
-    # la a0, fmt_input
-    # mv a1, s3
-    # mv a2, s4
-    # call printf
 
     add s5, s3, s4
 
