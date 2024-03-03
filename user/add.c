@@ -2,7 +2,7 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-#define BUF_SIZE 20
+#define BUF_SIZE 30
 
 int
 main(int argc, char *argv[])
