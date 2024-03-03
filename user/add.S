@@ -1,4 +1,4 @@
-#define MSG_LEN 21
+#define MSG_LEN 30
 #define SPACE 32
 #define ZERO 48
 #define NINE 57
@@ -11,7 +11,7 @@ fmt_result: .asciz "result: %d\n"
 fmt_err_space: .asciz "should be exactly one space between two numbers\n"
 fmt_err_char: .asciz "incorrect numbers\n"
 
-buf: .zero 20
+buf: .zero MSG_LEN
 
 
 .text                                      # Text (code) section
@@ -20,7 +20,7 @@ buf: .zero 20
 main:
     # load string to buffer
     la a0, buf
-    li a1, 20
+    li a1, MSG_LEN
     call gets
 
     # s0 - start buf
@@ -77,13 +77,13 @@ cont:
 
     # convert first part of string to number
     mv a0, s0
-    li a1, 20
+    li a1, MSG_LEN
     call atoi
     mv s3, a0
 
     # convert second part of string to number
     mv a0, s1
-    li a1, 20
+    li a1, MSG_LEN
     call atoi
     mv s4, a0
 
