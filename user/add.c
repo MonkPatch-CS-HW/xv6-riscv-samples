@@ -13,7 +13,9 @@ main(int argc, char *argv[])
 
   for(i=0; i+1 < BUF_SIZE; ){
     cc = read(0, &c, 1);
-    if(cc < 1)
+    if(cc < 0)
+      goto err_read;
+    if (cc == 0)
       break;
     buf[i++] = c;
     if(c == '\n' || c == '\r')
@@ -53,5 +55,9 @@ err_space:
 
 err_char:
   fprintf(2, "incorrect numbers\n");
+  exit(1);
+
+err_read:
+  fprintf(2, "read from stdin error\n");
   exit(1);
 }
