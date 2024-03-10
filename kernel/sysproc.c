@@ -5,6 +5,10 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "procinfo.h"
+
+extern struct spinlock wait_lock;
+extern struct proc proc[NPROC];
 
 uint64
 sys_exit(void)
@@ -88,4 +92,34 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+uint64
+sys_ps_listinfo() {
+  uint64 dst;
+  int lim;
+
+  argaddr(0, &dst);
+  argint(1, &lim);
+
+  if (lim < 0)
+    return -1;
+
+  if (dst == 0)
+    lim = 0;
+
+  struct proc *mp = myproc();
+
+  struct procinfo info;
+  int marker = 0;
+  int count = 0;
+
+  while ((marker = procinfo_next(&info, marker)) > 0) {
+    if (count < lim && copyout(mp->pagetable, dst + count * sizeof(struct procinfo), (void *)&info, sizeof(struct procinfo)) < 0)
+      return -1;
+
+    count++;
+  }
+
+  return count;
 }
