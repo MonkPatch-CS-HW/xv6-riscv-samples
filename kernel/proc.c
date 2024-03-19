@@ -685,20 +685,16 @@ procdump(void)
 
 int
 procinfo_next(struct procinfo *info, int marker) {
-  static char *states[] = {
-  [UNUSED]    "unused",
-  [USED]      "used",
-  [SLEEPING]  "sleep",
-  [RUNNABLE]  "runble",
-  [RUNNING]   "run",
-  [ZOMBIE]    "zombie"
+  static enum procinfo_state state_map[] = {
+    [SLEEPING] = PROC_SLEEPING,
+    [RUNNABLE] = PROC_RUNNABLE,
+    [RUNNING] = PROC_RUNNING,
+    [ZOMBIE]  = PROC_ZOMBIE,
   };
-
   struct proc *p;
-  enum procstate state;
 
   if (marker < 0 || marker >= NPROC)
-    return -1;
+    return 0;
 
   for (p = proc + marker; p < &proc[NPROC]; p++) {
     acquire(&p->lock);
@@ -708,18 +704,21 @@ procinfo_next(struct procinfo *info, int marker) {
       continue;
     }
 
+    info->parent_pid = 0;
     info->pid = p->pid;
-    state = p->state;
+    info->state = state_map[p->state];
 
     acquire(&wait_lock);
-    info->parent_pid = p->parent != 0 ? p->parent->pid : 0;
+    if (p->parent) {
+      acquire(&p->parent->lock);
+      info->parent_pid = p->parent->pid;
+      release(&p->parent->lock);
+    }
     release(&wait_lock);
 
     safestrcpy(info->name, p->name, sizeof(info->name));
 
     release(&p->lock);
-
-    safestrcpy(info->state, states[state], sizeof(info->state));
 
     return p - proc + 1;
   }
